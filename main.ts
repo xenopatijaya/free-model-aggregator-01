@@ -304,7 +304,8 @@ function upstreamCall(candidate: Candidate, clientApi: 'openai' | 'anthropic', b
   if (provider.wire === 'anthropic') headers['anthropic-version'] = '2023-06-01';
   if (stream) headers.accept = 'text/event-stream';
   if (provider.wire === 'openai') {
-    const upstream: Json = { ...body, model: candidate.model.id };
+    const upstream: Json =
+      clientApi === 'anthropic' ? anthropicToOpenAI(body, candidate.model.id, jsonMode) : { ...body, model: candidate.model.id };
     if (stream) upstream.stream_options = { include_usage: true };
     return { url: `${base}/v1/chat/completions`, headers, body: upstream };
   }
